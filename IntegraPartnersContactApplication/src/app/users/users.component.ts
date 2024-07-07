@@ -22,16 +22,4 @@ export class UsersComponent {
   });
 }
 
-asyncValidation = async (params: Record<string, unknown> & { data: Record<string, unknown> }) => {
-  const emailValidationUrl = 'https://js.devexpress.com/Demos/Mvc/RemoteValidation/CheckUniqueEmailAddress';
-/*
-  const result = await lastValueFrom(this.httpClient.post(emailValidationUrl, {
-    id: params.data.ID,
-    email: params.value,
-  }, {
-    responseType: 'json',
-  })); */
-
-  return null;
-};
 }
