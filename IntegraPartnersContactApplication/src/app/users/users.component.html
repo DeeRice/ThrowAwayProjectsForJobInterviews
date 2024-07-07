@@ -1,1 +1,30 @@
-<p>users works!</p>
+<div class="card">
+    <dx-data-grid id="dataGrid"
+    [dataSource]="users"
+    keyExpr="user_id"
+
+>
+    <dxi-column dataField="user_id"></dxi-column>
+    <dxi-column dataField="user_name"></dxi-column>
+    <dxi-column dataField="first_name"></dxi-column>
+    <dxi-column dataField="last_name"></dxi-column>
+    <dxi-column dataField="email" required="required">
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxi-validation-rule type="email"></dxi-validation-rule>
+        <dxi-validation-rule
+          type="async"
+          message="Email address is not unique"
+          [validationCallback]="asyncValidation"
+        >
+        </dxi-validation-rule>
+    </dxi-column>
+    <dxi-column dataField="user_status"></dxi-column>
+    <dxi-column dataField="department"></dxi-column>
+    <dxo-editing
+        mode="popup"
+        [allowUpdating]="true"
+        [allowDeleting]="true"
+        [allowAdding]="true">
+    </dxo-editing>
+</dx-data-grid>
+</div>

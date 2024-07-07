@@ -1,0 +1,6 @@
+@IntegraPartnersContactApplicationAPI_HostAddress = http://localhost:5129
+
+GET {{IntegraPartnersContactApplicationAPI_HostAddress}}/user/
+Accept: application/json
+
+###
