@@ -1,5 +1,6 @@
-﻿using IntegraPartnersContactApplicationAPI.ViewModel;
+﻿using IntegraPartnersContactApplicationAPI.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace IntegraPartnersContactApplicationAPI
 {
@@ -9,7 +10,10 @@ namespace IntegraPartnersContactApplicationAPI
             : base(options)
         {
         }
-
-        public DbSet<Users> Users { get; set; } = null!;
+        public IntegraPartnersContactAPIDataContext()
+        {
+           
+        }
+        public virtual DbSet<Users> Users { get; set; } = null!;
     }
 }

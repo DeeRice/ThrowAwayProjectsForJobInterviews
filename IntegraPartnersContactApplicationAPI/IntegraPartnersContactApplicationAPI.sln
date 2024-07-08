@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34414.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegraPartnersContactApplicationAPI", "IntegraPartnersContactApplicationAPI\IntegraPartnersContactApplicationAPI.csproj", "{D90CC13D-D927-4F14-B38B-39B425EAF50C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegraPartnersContactApplicationAPI", "IntegraPartnersContactApplicationAPI\IntegraPartnersContactApplicationAPI.csproj", "{D90CC13D-D927-4F14-B38B-39B425EAF50C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegraPartnersContactApplicationAPI.Test", "IntegraPartnersContactApplicationAPI.Test\IntegraPartnersContactApplicationAPI.Test.csproj", "{5C6FA55B-84A8-4E67-864F-6994CA838B92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D90CC13D-D927-4F14-B38B-39B425EAF50C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D90CC13D-D927-4F14-B38B-39B425EAF50C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D90CC13D-D927-4F14-B38B-39B425EAF50C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C6FA55B-84A8-4E67-864F-6994CA838B92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C6FA55B-84A8-4E67-864F-6994CA838B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C6FA55B-84A8-4E67-864F-6994CA838B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C6FA55B-84A8-4E67-864F-6994CA838B92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

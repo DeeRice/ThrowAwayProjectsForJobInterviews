@@ -1,0 +1,34 @@
+﻿using IntegraPartnersContactApplicationAPI.Interface;
+using IntegraPartnersContactApplicationAPI.Model;
+using IntegraPartnersContactApplicationAPI.ViewModel;
+
+namespace IntegraPartnersContactApplicationAPI.mapping
+{
+    public class Mapping : IMapping
+    {
+        public UsersViewModel MapEntityToViewModel(Users user)
+        {
+            UsersViewModel userViewModel = new UsersViewModel();
+            userViewModel.UserID = user.user_id;
+            userViewModel.Username = user.user_name;
+            userViewModel.FirstName = user.first_name;
+            userViewModel.LastName = user.last_name;
+            userViewModel.Email = user.email;
+            userViewModel.Department = user.department;
+            userViewModel.UserStatus = user.user_status;
+            return userViewModel;
+        }
+        public Users MapViewModelToEntity(UsersViewModel userViewModel)
+        {
+            Users user = new Users();
+            user.user_id = userViewModel.UserID;
+            user.user_name = userViewModel.Username;
+            user.first_name = userViewModel.FirstName;
+            user.last_name = userViewModel.LastName;
+            user.email = userViewModel.Email;
+            user.department = userViewModel.Department;
+            user.user_status = userViewModel.UserStatus;
+            return user;
+        }
+    }
+}

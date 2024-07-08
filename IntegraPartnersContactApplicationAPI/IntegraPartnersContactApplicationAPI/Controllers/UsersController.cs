@@ -6,47 +6,54 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IntegraPartnersContactApplicationAPI;
+using IntegraPartnersContactApplicationAPI.Model;
+using IntegraPartnersContactApplicationAPI.Interface;
 using IntegraPartnersContactApplicationAPI.ViewModel;
+using IntegraPartnersContactApplicationAPI.mapping;
+using Microsoft.AspNetCore.Identity;
+using NuGet.Protocol;
 
 namespace IntegraPartnersContactApplicationAPI.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : Controller, IUsersController
     {
-        private readonly IntegraPartnersContactAPIDataContext _context;
+        private readonly IUsersRepository _IUsersRepository;
+        private readonly IMapping _mapper;
 
-        public UsersController(IntegraPartnersContactAPIDataContext context)
+        public UsersController(IUsersRepository IUsersRepository, IMapping mapper)
         {
-            _context = context;
+            _IUsersRepository = IUsersRepository;
+            _mapper = mapper;
         }
 
         // GET: Users/GetAllUsers
 
     
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<JsonResult> GetAllUsers()
         {
-            var result = await _context.Users.ToListAsync();
-
-            return Json(result);
+            var listOfAllUsers = new List<UsersViewModel>();
+            var result = await _IUsersRepository.GetAllUsers();
+            result.ForEach(x =>
+            {
+                listOfAllUsers.Add(_mapper.MapEntityToViewModel(x));
+            });
+            return new JsonResult(listOfAllUsers);
         }
 
         // GET: Users/GetUser/5
         [HttpGet]
-        public async Task<IActionResult> GetUser(int? id)
+        public async Task<JsonResult> GetUserByID(int id)
         {
-            if (id == null)
+
+            var userViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.GetUserByID(id));
+            if (userViewModel == null)
             {
-                return NotFound();
+
+                return new JsonResult(new Exception("Could Not Find User With Specified ID").ToJson());
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.user_id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Json(user);
+            return new  JsonResult(userViewModel);
         }
 
 
@@ -55,32 +62,35 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateUser([Bind("UserID,Username,FirstName,LastName,Email,UserStatus,Department")] Users user)
+        public async Task<JsonResult> CreateUser([Bind("UserID,Username,FirstName,LastName,Email,UserStatus,Department")] UsersViewModel userViewModel)
         {
+            
             if (ModelState.IsValid)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return Json(1);
+               if(UserExists(userViewModel.UserID) == false)
+                {
+                    var userEntity = _mapper.MapViewModelToEntity(userViewModel);
+                    var result = await _IUsersRepository.CreateUser(userEntity);
+                    return new JsonResult(result);
+                }
+                else
+                {
+                    return new JsonResult(new Exception("the user that was attempted to be created already exist in the database").ToJson());
+                }
             }
-            return Json(-1);
+            return new JsonResult(new Exception("error occured while trying to create a user. Please check to make sure all value are accurate").ToJson());
         }
 
         // GET: Users/FindUser/5
         [HttpGet]
-        public async Task<IActionResult> FindUser(int? id)
+        public async Task<JsonResult> FindUser(int id)
         {
-            if (id == null)
+            var userViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.FindUser(id));
+            if (userViewModel == null)
             {
-                return NotFound();
+                return new JsonResult(new Exception("Could Not Find User With The Submitted ID.").ToJson());
             }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return Json(user);
+            return new JsonResult(userViewModel);
         }
 
         // POST: Users/Edit/5
@@ -88,56 +98,63 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUser(int id, [Bind("UserID,Username,FirstName,LastName,Email,UserStatus,Department")] Users users)
+        public async Task<JsonResult> EditUser(int id, [Bind("UserID,Username,FirstName,LastName,Email,UserStatus,Department")] UsersViewModel userViewModel)
         {
-            if (id != users.user_id)
+            if (id != userViewModel.UserID)
             {
-                return NotFound();
+                return new JsonResult(new Exception("the id sent with the request does not match the id in the user object").ToJson());
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(users);
-                    await _context.SaveChangesAsync();
+                    if(UserExists(id))
+                    {
+                        var userEntity = _mapper.MapViewModelToEntity(userViewModel);
+                        var result = await _IUsersRepository.EditUser(id, userEntity);
+                        return Json(result);
+                    }
+                    else
+                    {
+                        return new JsonResult(new Exception("the user being edited is not found in the database").ToJson());
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(users.user_id))
+                    if (!UserExists(userViewModel.UserID))
                     {
-                        return NotFound();
+                        return new JsonResult(new Exception("the user being edited is not found in the database").ToJson());
                     }
                     else
                     {
                         throw;
                     }
                 }
-                return Json(1);
             }
-            return Json(-1);
+            return new JsonResult(new Exception("Something went wrong. Please check all data from the request and make sure it is valid.").ToJson());
         }
 
         // POST: Users/Delete/5
         [HttpDelete, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<JsonResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _IUsersRepository.FindUser(id);
             if (user != null)
             {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
+               await _IUsersRepository.DeleteUser(id);
                 return Json(1);
             }
-
-
-            return Json(-1);
+            else
+            {
+                return new JsonResult(new Exception("could not find the user to delete.").ToJson());
+            }
         }
 
-        private bool UserExists(int id)
+        public bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.user_id == id);
+            return _IUsersRepository.UserExists(id);
         }
     }
 }

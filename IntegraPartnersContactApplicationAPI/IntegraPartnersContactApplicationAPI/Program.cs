@@ -1,4 +1,8 @@
 using IntegraPartnersContactApplicationAPI;
+using IntegraPartnersContactApplicationAPI.Controllers;
+using IntegraPartnersContactApplicationAPI.Interface;
+using IntegraPartnersContactApplicationAPI.mapping;
+using IntegraPartnersContactApplicationAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -13,7 +17,9 @@ builder.Services.AddDbContext<IntegraPartnersContactAPIDataContext>(options =>
 {
     options.UseSqlServer("Data Source=DESKTOP-7Q3Q0SF;Initial Catalog=IntegraPartners;Integrated Security=True;Encrypt=False");
 });
-
+builder.Services.AddScoped<IMapping, Mapping>();
+builder.Services.AddScoped<IUsersController, UsersController>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 //builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
