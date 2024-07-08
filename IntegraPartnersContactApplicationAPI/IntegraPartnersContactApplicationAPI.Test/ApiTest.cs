@@ -74,11 +74,28 @@ namespace IntegraPartnersContactApplicationAPI.Test
         public void GetUserByIDReturnsAUser()
         {
             // Arrange test
-
+            var iMockUserRepository = new Mock<IUsersRepository>();
+            var iMapper = new Mock<IMapping>();
+            var user = new Users() { user_id = 1, first_name = "john", last_name = "doe" };
+            var userViewModel = new UsersViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
+            List<Users> list = new List<Users>();
+            list.Add(user);
+            iMockUserRepository.Setup(x => x.GetUserByID(user.user_id)).Returns(Task.FromResult(user));
+            iMapper.Setup(x => x.MapEntityToViewModel(user)).Returns(userViewModel);
+            var controller = new UsersController(iMockUserRepository.Object, iMapper.Object);
+            JsonResult? result = null;
 
             // Act test
+            Task.Run(async () =>
+            {
 
-            // Asset test
+                result = await controller.GetUserByID(userViewModel.UserID);
+
+            }).Wait();
+            UsersViewModel okResult = JsonConvert.DeserializeObject<UsersViewModel>(result.Value.ToJson());
+
+            // Assert test
+            Assert.AreEqual(okResult.ToJson(), userViewModel.ToJson());
         }
 
         [TestMethod]
