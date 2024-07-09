@@ -8,12 +8,12 @@ import { Observable } from 'rxjs/internal/Observable';
   providedIn: 'root'
 })
 export class UserService {
-  public baseUrl ="https://localhost:44335/"
-  public getUserByIDUrl: string = this.baseUrl + "/GetUser/";
+  public baseUrl ="https://localhost:44335"
+  public getUserByIDUrl: string = this.baseUrl + "/GetUser";
   public getAllUsersUrl: string = this.baseUrl + "/GetAllUsers";
   public addUserUrl: string = this.baseUrl + "/CreateUser";
   public updateUserUrl: string = this.baseUrl + "/EditUser";
-  public deleteUserUrl: string = this.baseUrl + "/DeleteUser/";
+  public deleteUserUrl: string = this.baseUrl + "/DeleteUser";
   public _httpClient?: HttpClient;
   public _currentUserID: number = -1;
     constructor(private httpClient: HttpClient) { 
