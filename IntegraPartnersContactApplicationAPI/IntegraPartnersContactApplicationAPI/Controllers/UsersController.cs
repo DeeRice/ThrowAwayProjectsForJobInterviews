@@ -50,7 +50,7 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
             if (userViewModel == null)
             {
 
-                return new JsonResult(new Exception("Could Not Find User With Specified ID").ToJson());
+                return new JsonResult(new Exception("Could Not Find User With Specified ID").Message.ToJson());
             }
 
             return new  JsonResult(userViewModel);
@@ -75,10 +75,10 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
                 }
                 else
                 {
-                    return new JsonResult(new Exception("the user that was attempted to be created already exist in the database").ToJson());
+                    return new JsonResult(new Exception("the user that was attempted to be created already exist in the database").Message.ToJson());
                 }
             }
-            return new JsonResult(new Exception("error occured while trying to create a user. Please check to make sure all value are accurate").ToJson());
+            return new JsonResult(new Exception("error occurred while trying to create a user. Please check to make sure all value are accurate").Message.ToJson());
         }
 
         // GET: Users/FindUser/5
@@ -88,7 +88,7 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
             var userViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.FindUser(id));
             if (userViewModel == null)
             {
-                return new JsonResult(new Exception("Could Not Find User With The Submitted ID.").ToJson());
+                return new JsonResult(new Exception("Could Not Find User With The Submitted ID.").Message.ToJson());
             }
             return new JsonResult(userViewModel);
         }
@@ -100,9 +100,13 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> EditUser(int id, [Bind("UserID,Username,FirstName,LastName,Email,UserStatus,Department")] UsersViewModel userViewModel)
         {
+            if(userViewModel == null)
+            {
+                return new JsonResult(new Exception("a user was not submitted to be updated.").Message.ToJson());
+            }
             if (id != userViewModel.UserID)
             {
-                return new JsonResult(new Exception("the id sent with the request does not match the id in the user object").ToJson());
+                return new JsonResult(new Exception("the id sent with the request does not match the id in the user object").Message.ToJson());
             }
 
             if (ModelState.IsValid)
@@ -117,14 +121,14 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
                     }
                     else
                     {
-                        return new JsonResult(new Exception("the user being edited is not found in the database").ToJson());
+                        return new JsonResult(new Exception("the user being edited is not found in the database").Message.ToJson());
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!UserExists(userViewModel.UserID))
                     {
-                        return new JsonResult(new Exception("the user being edited is not found in the database").ToJson());
+                        return new JsonResult(new Exception("the user being edited is not found in the database").Message.ToJson());
                     }
                     else
                     {
@@ -132,7 +136,7 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
                     }
                 }
             }
-            return new JsonResult(new Exception("Something went wrong. Please check all data from the request and make sure it is valid.").ToJson());
+            return new JsonResult(new Exception("Something went wrong. Please check all data from the request and make sure it is valid.").Message.ToJson());
         }
 
         // POST: Users/Delete/5
@@ -148,7 +152,7 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
             }
             else
             {
-                return new JsonResult(new Exception("could not find the user to delete.").ToJson());
+                return new JsonResult(new Exception("could not find the user to delete.").Message.ToJson());
             }
         }
 

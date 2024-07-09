@@ -1,4 +1,5 @@
-﻿using IntegraPartnersContactApplicationAPI.Model;
+﻿using IntegraPartnersContactApplicationAPI.Interface;
+using IntegraPartnersContactApplicationAPI.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -15,5 +16,15 @@ namespace IntegraPartnersContactApplicationAPI
            
         }
         public virtual DbSet<Users> Users { get; set; } = null!;
+
+        public new int SaveChanges()
+        {
+            return base.SaveChanges();
+        }
+
+        public Task<int> SavingChangesAsync()
+        {
+            return base.SaveChangesAsync();
+        }
     }
 }

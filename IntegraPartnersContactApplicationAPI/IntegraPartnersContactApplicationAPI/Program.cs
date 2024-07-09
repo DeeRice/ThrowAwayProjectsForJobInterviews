@@ -20,6 +20,7 @@ builder.Services.AddDbContext<IntegraPartnersContactAPIDataContext>(options =>
 builder.Services.AddScoped<IMapping, Mapping>();
 builder.Services.AddScoped<IUsersController, UsersController>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
 //builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

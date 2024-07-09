@@ -1,5 +1,6 @@
 ﻿using IntegraPartnersContactApplicationAPI.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntegraPartnersContactApplicationAPI.Interface
 {
@@ -12,5 +13,6 @@ namespace IntegraPartnersContactApplicationAPI.Interface
         Task<int> EditUser(int user_id, Users user);
         Task<int> DeleteUser(int user_id);
         bool UserExists(int id);
+        DbSet<Users> PopulateDataSet(DbSet<Users> Users);
     }
 }

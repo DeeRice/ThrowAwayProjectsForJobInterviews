@@ -4,27 +4,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Data.Entity;
+
 
 namespace IntegraPartnersContactApplicationAPI.Repository
 {
     public class UsersRepository : IUsersRepository
     {
-        private readonly IntegraPartnersContactAPIDataContext appDbContext;
+        public IntegraPartnersContactAPIDataContext _appDbContext ;
+
 
         public UsersRepository(IntegraPartnersContactAPIDataContext appDbContext)
         {
-            this.appDbContext = appDbContext;
+            this._appDbContext = appDbContext;
         }
 
         public async Task<List<Users>> GetAllUsers()
         {
-            return await appDbContext.Users.ToListAsync();
+            return await _appDbContext.Users.ToListAsync();
         }
 
         public async Task<Users> GetUserByID(int user_id)
         {
-            return await appDbContext.Users
+            return await _appDbContext.Users
                 .FirstOrDefaultAsync(e => e.user_id == user_id);
         }
 
@@ -32,8 +33,8 @@ namespace IntegraPartnersContactApplicationAPI.Repository
         {
             if (user != null && user.user_id != 0)
             {
-                var result = await appDbContext.Users.AddAsync(user);
-                await appDbContext.SaveChangesAsync();
+                var result = await _appDbContext.Users.AddAsync(user);
+                await _appDbContext.SavingChangesAsync();
                 return 1;
             }
             else
@@ -44,7 +45,7 @@ namespace IntegraPartnersContactApplicationAPI.Repository
 
         public async Task<int> EditUser(int user_id, Users user)
         {
-            var result = await appDbContext.Users
+            var result = await _appDbContext.Users
                 .FirstOrDefaultAsync(e => e.user_id == user.user_id);
 
             if (result != null)
@@ -54,7 +55,7 @@ namespace IntegraPartnersContactApplicationAPI.Repository
                 result.email = user.email;
                 result.department = user.department;
                 result.user_status = user.user_status;
-                await appDbContext.SaveChangesAsync();
+                await _appDbContext.SavingChangesAsync();
 
                 return 1;
             }
@@ -64,12 +65,12 @@ namespace IntegraPartnersContactApplicationAPI.Repository
 
         public async Task<int> DeleteUser(int user_id)
         {
-            var result = await appDbContext.Users
+            var result = await _appDbContext.Users
                 .FirstOrDefaultAsync(e => e.user_id == user_id);
             if (result != null)
             {
-                appDbContext.Users.Remove(result);
-                await appDbContext.SaveChangesAsync();
+                _appDbContext.Users.Remove(result);
+                await _appDbContext.SavingChangesAsync();
                 return 1;
             }
             else
@@ -80,14 +81,20 @@ namespace IntegraPartnersContactApplicationAPI.Repository
 
         public async Task<Users> FindUser(int user_id)
         {
-            var user = await appDbContext.Users.FindAsync(user_id);
+            var user = await _appDbContext.Users.FindAsync(user_id);
             return user;
         }
 
         public bool UserExists(int id)
         {
-            var result = appDbContext.Users.Any(e => e.user_id == id);
+            var result = _appDbContext.Users.Any(e => e.user_id == id);
             return result;
+        }
+
+        public DbSet<Users> PopulateDataSet(DbSet<Users> Users)
+        {
+            _appDbContext.Users = Users;
+            return _appDbContext.Users;
         }
     }
 }
