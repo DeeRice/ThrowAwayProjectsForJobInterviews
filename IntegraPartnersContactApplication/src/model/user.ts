@@ -1,10 +1,10 @@
 export class User {
-  public user_id :Number = -1;
-  public user_name:string ="";
-  public first_name:string ="";
-  public last_name:string ="";
+  public userID:Number = -1;
+  public username:string ="";
+  public firstName:string ="";
+  public lastName:string ="";
   public email:string ="";
-  public user_status:string ="";
+  public userStatus:string ="";
   public department:string ="";
 
   constructor(){}
