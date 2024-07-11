@@ -6,12 +6,12 @@ namespace IntegraPartnersContactApplicationAPI.mapping
 {
     public class Mapping : IMapping
     {
-        public UsersViewModel MapEntityToViewModel(Users user)
+        public UserViewModel MapEntityToViewModel(Users user)
         {
-            UsersViewModel userViewModel = null;
+            UserViewModel userViewModel = null;
             if (user != null)
             {
-                userViewModel = new UsersViewModel();
+                userViewModel = new UserViewModel();
                 userViewModel.UserID = user.user_id;
                 userViewModel.Username = user.user_name;
                 userViewModel.FirstName = user.first_name;
@@ -26,7 +26,7 @@ namespace IntegraPartnersContactApplicationAPI.mapping
                 return userViewModel;
             }
         }
-        public Users MapViewModelToEntity(UsersViewModel userViewModel)
+        public Users MapViewModelToEntity(UserViewModel userViewModel)
         {
             Users user = null;
             if (userViewModel != null)

@@ -20,7 +20,11 @@ builder.Services.AddDbContext<IntegraPartnersContactAPIDataContext>(options =>
 builder.Services.AddScoped<IMapping, Mapping>();
 builder.Services.AddScoped<IUsersController, UsersController>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-
+builder.Services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
+{
+    builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+}));
 //builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -28,7 +32,7 @@ var app = builder.Build();
 
     app.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=Home}/{action=Index}/{UserID?}");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -38,6 +42,10 @@ if (app.Environment.IsDevelopment())
    // app.UseSwaggerUI();
 }
 
+app.UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

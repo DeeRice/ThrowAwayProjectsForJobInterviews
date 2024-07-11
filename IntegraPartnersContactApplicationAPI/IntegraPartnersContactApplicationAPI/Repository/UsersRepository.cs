@@ -23,69 +23,96 @@ namespace IntegraPartnersContactApplicationAPI.Repository
             return await _appDbContext.Users.ToListAsync();
         }
 
-        public async Task<Users> GetUserByID(int user_id)
+        public async Task<Users> GetUserByID(int ? user_id)
         {
-            return await _appDbContext.Users
-                .FirstOrDefaultAsync(e => e.user_id == user_id);
+            try
+            {
+                return await _appDbContext.Users
+                    .FirstOrDefaultAsync(e => e.user_id == user_id);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
-        public async Task<int> CreateUser(Users user)
+        public async Task<Users> CreateUser(Users user)
         {
-            if (user != null && user.user_id != 0)
+            if (user != null)
             {
-                var result = await _appDbContext.Users.AddAsync(user);
-                await _appDbContext.SavingChangesAsync();
-                return 1;
+                try
+                {
+                    user.user_id = null;
+                    var result = await _appDbContext.Users.AddAsync(user);
+
+                    await _appDbContext.SaveChangesAsync();
+                    Users updatedUser = _appDbContext.Users.FirstOrDefault(x => x.user_id == user.user_id);
+                    return updatedUser;
+                }
+                catch(Exception ex) 
+                {
+                    return null;
+                }
             }
             else
             {
-                return -1;
+                return null;
             }
         }
 
-        public async Task<int> EditUser(int user_id, Users user)
+        public async Task<Users> EditUser(int ? user_id, Users user)
         {
-            var result = await _appDbContext.Users
-                .FirstOrDefaultAsync(e => e.user_id == user.user_id);
-
-            if (result != null)
+            try
             {
-                result.first_name = user.first_name;
-                result.last_name = user.last_name;
-                result.email = user.email;
-                result.department = user.department;
-                result.user_status = user.user_status;
-                await _appDbContext.SavingChangesAsync();
+                var result = await _appDbContext.Users
+                    .FirstOrDefaultAsync(e => e.user_id == user.user_id);
 
-                return 1;
+                if (result != null)
+                {
+                    result.user_name = user.user_name;
+                    result.user_id = user.user_id;
+                    result.first_name = user.first_name;
+                    result.last_name = user.last_name;
+                    result.email = user.email;
+                    result.department = user.department;
+                    result.user_status = user.user_status;
+                    await _appDbContext.SaveChangesAsync();
+
+                    Users updatedUser = _appDbContext.Users.FirstOrDefault(x => x.user_id == user.user_id);
+                    return updatedUser;
+                }
             }
-
-            return -1;
+            catch(Exception ex)
+            {
+                return null;
+            }
+            return null;
         }
 
-        public async Task<int> DeleteUser(int user_id)
+        public async Task<Users> DeleteUser(int ? user_id)
         {
             var result = await _appDbContext.Users
                 .FirstOrDefaultAsync(e => e.user_id == user_id);
             if (result != null)
             {
+                var removeUser = _appDbContext.Users.FirstOrDefault(x => x.user_id == user_id);
                 _appDbContext.Users.Remove(result);
-                await _appDbContext.SavingChangesAsync();
-                return 1;
+                await _appDbContext.SaveChangesAsync();
+                return removeUser;
             }
             else
             {
-                return -1;
+                return null;
             }
         }
 
-        public async Task<Users> FindUser(int user_id)
+        public async Task<Users> FindUser(int ? user_id)
         {
             var user = await _appDbContext.Users.FindAsync(user_id);
             return user;
         }
 
-        public bool UserExists(int id)
+        public bool UserExists(int ? id)
         {
             var result = _appDbContext.Users.Any(e => e.user_id == id);
             return result;

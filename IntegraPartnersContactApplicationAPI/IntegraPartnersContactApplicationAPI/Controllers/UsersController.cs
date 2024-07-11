@@ -32,7 +32,7 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
         [HttpGet]
         public async Task<JsonResult> GetAllUsers()
         {
-            var listOfAllUsers = new List<UsersViewModel>();
+            var listOfAllUsers = new List<UserViewModel>();
             var result = await _IUsersRepository.GetAllUsers();
             result.ForEach(x =>
             {
@@ -43,10 +43,10 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
 
         // GET: Users/GetUser/5
         [HttpGet]
-        public async Task<JsonResult> GetUserByID(int id)
+        public async Task<JsonResult> GetUserByID(int ? UserID)
         {
 
-            var userViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.GetUserByID(id));
+            var userViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.GetUserByID(UserID));
             if (userViewModel == null)
             {
 
@@ -61,8 +61,8 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<JsonResult> CreateUser([Bind("UserID,Username,FirstName,LastName,Email,UserStatus,Department")] UsersViewModel userViewModel)
+
+        public async Task<JsonResult> CreateUser([FromBody] UserViewModel userViewModel)
         {
             
             if (ModelState.IsValid)
@@ -70,8 +70,8 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
                if(UserExists(userViewModel.UserID) == false)
                 {
                     var userEntity = _mapper.MapViewModelToEntity(userViewModel);
-                    var result = await _IUsersRepository.CreateUser(userEntity);
-                    return new JsonResult(result);
+                    var returnedViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.CreateUser(userEntity));
+                    return new JsonResult(returnedViewModel);
                 }
                 else
                 {
@@ -83,9 +83,9 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
 
         // GET: Users/FindUser/5
         [HttpGet]
-        public async Task<JsonResult> FindUser(int id)
+        public async Task<JsonResult> FindUser(int ? UserID)
         {
-            var userViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.FindUser(id));
+            var userViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.FindUser(UserID));
             if (userViewModel == null)
             {
                 return new JsonResult(new Exception("Could Not Find User With The Submitted ID.").Message.ToJson());
@@ -96,15 +96,15 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<JsonResult> EditUser(int id, [Bind("UserID,Username,FirstName,LastName,Email,UserStatus,Department")] UsersViewModel userViewModel)
+        [HttpPut]
+        
+        public async Task<JsonResult> EditUser(int ? UserID,[FromBody] UserViewModel userViewModel)
         {
             if(userViewModel == null)
             {
                 return new JsonResult(new Exception("a user was not submitted to be updated.").Message.ToJson());
             }
-            if (id != userViewModel.UserID)
+            if (UserID != userViewModel.UserID)
             {
                 return new JsonResult(new Exception("the id sent with the request does not match the id in the user object").Message.ToJson());
             }
@@ -113,11 +113,11 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
             {
                 try
                 {
-                    if(UserExists(id))
+                    if(UserExists(UserID))
                     {
                         var userEntity = _mapper.MapViewModelToEntity(userViewModel);
-                        var result = await _IUsersRepository.EditUser(id, userEntity);
-                        return Json(result);
+                        var returnedViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.EditUser(UserID,userEntity));
+                        return new JsonResult(returnedViewModel);
                     }
                     else
                     {
@@ -140,15 +140,15 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
         }
 
         // POST: Users/Delete/5
-        [HttpDelete, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<JsonResult> DeleteUser(int id)
+        [HttpDelete]
+       
+        public async Task<JsonResult> DeleteUser(int ? UserID)
         {
-            var user = await _IUsersRepository.FindUser(id);
+            var user = await _IUsersRepository.FindUser(UserID);
             if (user != null)
             {
-               await _IUsersRepository.DeleteUser(id);
-                return Json(1);
+                var returnedViewModel = _mapper.MapEntityToViewModel(await _IUsersRepository.DeleteUser(UserID));
+                return new JsonResult(returnedViewModel);
             }
             else
             {
@@ -156,9 +156,9 @@ namespace IntegraPartnersContactApplicationAPI.Controllers
             }
         }
 
-        public bool UserExists(int id)
+        public bool UserExists(int ? UserID)
         {
-            return _IUsersRepository.UserExists(id);
+            return _IUsersRepository.UserExists(UserID);
         }
     }
 }

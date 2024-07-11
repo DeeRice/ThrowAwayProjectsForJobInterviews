@@ -35,7 +35,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
                 result = await controller.GetAllUsers();
 
             }).Wait();
-            List<UsersViewModel> okResult = JsonConvert.DeserializeObject<List<UsersViewModel>>(result.Value.ToJson());
+            List<UserViewModel> okResult = JsonConvert.DeserializeObject<List<UserViewModel>>(result.Value.ToJson());
 
             // Assert test
             Assert.AreEqual(okResult?.Count, 0);
@@ -48,7 +48,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMockUserRepository = new Mock<IUsersRepository>();
             var iMapper = new Mock<IMapping>();
             var user = new Users() { user_id = 1, first_name = "john", last_name = "doe" };
-            var userViewModel = new UsersViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
             iMockUserRepository.Setup(x => x.GetAllUsers()).Returns(Task.FromResult(list));
@@ -63,7 +63,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
                     result = await controller.GetAllUsers();
                    
                 }).Wait();
-            List<UsersViewModel> okResult = JsonConvert.DeserializeObject<List<UsersViewModel>>(result.Value.ToJson());
+            List<UserViewModel> okResult = JsonConvert.DeserializeObject<List<UserViewModel>>(result.Value.ToJson());
            
             // Assert test
             Assert.AreEqual(okResult?.Count, 1);
@@ -78,7 +78,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMockUserRepository = new Mock<IUsersRepository>();
             var iMapper = new Mock<IMapping>();
             var user = new Users() { user_id = 1, first_name = "john", last_name = "doe" };
-            var userViewModel = new UsersViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
             iMockUserRepository.Setup(x => x.GetUserByID(user.user_id)).Returns(Task.FromResult(user));
@@ -93,7 +93,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
                 result = await controller.GetUserByID(userViewModel.UserID);
 
             }).Wait();
-            UsersViewModel okResult = JsonConvert.DeserializeObject<UsersViewModel>(result.Value.ToJson());
+            UserViewModel okResult = JsonConvert.DeserializeObject<UserViewModel>(result.Value.ToJson());
 
             // Assert test
             Assert.AreEqual(okResult.ToJson(), userViewModel.ToJson());
@@ -107,7 +107,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMapper = new Mock<IMapping>();
             Users user = null;
             string exceptionMessage = "Could Not Find User With Specified ID";
-            UsersViewModel userViewModel = null;
+            UserViewModel userViewModel = null;
             List<Users> list = new List<Users>();
             list.Add(user);
             iMockUserRepository.Setup(x => x.GetUserByID(0)).Returns(Task.FromResult(user));
@@ -136,10 +136,10 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMapper = new Mock<IMapping>();
             Users user = null;
             string exceptionMessage = "a user was not submitted to be updated.";
-            UsersViewModel userViewModel = null;
+            UserViewModel userViewModel = null;
             List<Users> list = new List<Users>();
             list.Add(user);
-            iMockUserRepository.Setup(x => x.EditUser(0, user)).Returns(Task.FromResult(-1));
+            iMockUserRepository.Setup(x => x.EditUser(0, user)).Returns(Task.FromResult(user));
             iMapper.Setup(x => x.MapEntityToViewModel(user)).Returns(userViewModel);
             var controller = new UsersController(iMockUserRepository.Object, iMapper.Object);
             JsonResult? result = null;
@@ -165,10 +165,10 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMapper = new Mock<IMapping>();
             Users user = null;
             string exceptionMessage = "the user being edited is not found in the database";
-            var userViewModel = new UsersViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
-            iMockUserRepository.Setup(x => x.EditUser(0, user)).Returns(Task.FromResult(-1));
+            iMockUserRepository.Setup(x => x.EditUser(0, user)).Returns(Task.FromResult(user));
             iMapper.Setup(x => x.MapEntityToViewModel(user)).Returns(userViewModel);
             var controller = new UsersController(iMockUserRepository.Object, iMapper.Object);
             JsonResult? result = null;
@@ -194,10 +194,10 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMapper = new Mock<IMapping>();
             Users user = null;
             string exceptionMessage = "the id sent with the request does not match the id in the user object";
-            var userViewModel = new UsersViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
-            iMockUserRepository.Setup(x => x.EditUser(0, user)).Returns(Task.FromResult(-1));
+            iMockUserRepository.Setup(x => x.EditUser(0, user)).Returns(Task.FromResult(user));
             iMapper.Setup(x => x.MapEntityToViewModel(user)).Returns(userViewModel);
             var controller = new UsersController(iMockUserRepository.Object, iMapper.Object);
             JsonResult? result = null;
@@ -222,11 +222,11 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMockUserRepository = new Mock<IUsersRepository>();
             var iMapper = new Mock<IMapping>();
             Users user = new Users() { user_id = 1, first_name = "john", last_name = "doe" };
-            var userViewModel = new UsersViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 1, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
             iMockUserRepository.Setup(x => x.UserExists(userViewModel.UserID)).Returns(true);
-            iMockUserRepository.Setup(x => x.EditUser(1, user)).Returns(Task.FromResult(1));
+            iMockUserRepository.Setup(x => x.EditUser(1, user)).Returns(Task.FromResult(user));
             iMapper.Setup(x => x.MapViewModelToEntity(userViewModel)).Returns(user);
             var controller = new UsersController(iMockUserRepository.Object, iMapper.Object);
             JsonResult? result = null;
@@ -238,10 +238,10 @@ namespace IntegraPartnersContactApplicationAPI.Test
                 result = await controller.EditUser(userViewModel.UserID, userViewModel);
 
             }).Wait();
-            bool okResult = JsonConvert.DeserializeObject<bool>(result.Value.ToJson());
+            Users okResult = JsonConvert.DeserializeObject<Users>(result.Value.ToJson());
 
             // Assert test
-            Assert.AreEqual(okResult, true);
+            Assert.AreEqual(okResult.ToJson(), user.ToJson());
         }
 
         [TestMethod]
@@ -249,7 +249,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
         {
             // Arrange test
             Users user = new Users() { user_id = 0, first_name = "john", last_name = "doe" };
-            var userViewModel = new UsersViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
             var query = GetQueryableMockDbSet<Users>(list);
@@ -257,7 +257,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMockUserRepository = new Mock<IUsersRepository>();
             iMockUserRepository.Setup(x => x.PopulateDataSet(query)).Returns(query);
             string exceptionMessage = "the user that was attempted to be created already exist in the database";
-            iMockUserRepository.Setup(x => x.CreateUser(user)).Returns(Task.FromResult(-1));
+            iMockUserRepository.Setup(x => x.CreateUser(user)).Returns(Task.FromResult(user));
             iMockUserRepository.Setup(x => x.UserExists(user.user_id)).Returns(true);
             iMapper.Setup(x => x.MapViewModelToEntity(userViewModel)).Returns(user);
             var controller = new UsersController(iMockUserRepository.Object, iMapper.Object);
@@ -281,7 +281,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
         {
             // Arrange test
             Users user = new Users() { user_id = 1, first_name = "john", last_name = "doe" };
-            var userViewModel = new UsersViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
             var query = GetQueryableMockDbSet<Users>(list);
@@ -289,7 +289,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMockUserRepository = new Mock<IUsersRepository>();
             iMockUserRepository.Setup(x => x.PopulateDataSet(query)).Returns(query);
             string exceptionMessage = "the user that was attempted to be created already exist in the database";
-            iMockUserRepository.Setup(x => x.CreateUser(user)).Returns(Task.FromResult(1));
+            iMockUserRepository.Setup(x => x.CreateUser(user)).Returns(Task.FromResult(user));
             iMockUserRepository.Setup(x => x.UserExists(user.user_id)).Returns(false);
             iMapper.Setup(x => x.MapViewModelToEntity(userViewModel)).Returns(user);
             var controller = new UsersController(iMockUserRepository.Object, iMapper.Object);
@@ -302,10 +302,10 @@ namespace IntegraPartnersContactApplicationAPI.Test
                 result = await controller.CreateUser(userViewModel);
 
             }).Wait();
-            bool okResult = JsonConvert.DeserializeObject<bool>(result.Value.ToString());
+            Users okResult = JsonConvert.DeserializeObject<Users>(result.Value.ToString());
 
             // Assert test
-            Assert.AreEqual(okResult, true);
+            Assert.AreEqual(okResult.ToJson(), user.ToJson());
         }
 
         [TestMethod]
@@ -313,7 +313,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
         {
             // Arrange test
             Users user = new Users() { user_id = 0, first_name = "john", last_name = "doe" };
-            var userViewModel = new UsersViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
             list.Add(user);
             var query = GetQueryableMockDbSet<Users>(list);
@@ -321,7 +321,7 @@ namespace IntegraPartnersContactApplicationAPI.Test
             var iMockUserRepository = new Mock<IUsersRepository>();
             iMockUserRepository.Setup(x => x.PopulateDataSet(query)).Returns(query);
             string exceptionMessage = "the user that was attempted to be created already exist in the database";
-            iMockUserRepository.Setup(x => x.DeleteUser(user.user_id)).Returns(Task.FromResult(1));
+            iMockUserRepository.Setup(x => x.DeleteUser(user.user_id)).Returns(Task.FromResult(user));
             iMockUserRepository.Setup(x => x.UserExists(user.user_id)).Returns(true);
             iMockUserRepository.Setup(x => x.FindUser(user.user_id)).Returns(Task.FromResult(user));
             iMapper.Setup(x => x.MapViewModelToEntity(userViewModel)).Returns(user);
@@ -335,10 +335,10 @@ namespace IntegraPartnersContactApplicationAPI.Test
                 result = await controller.DeleteUser(userViewModel.UserID);
 
             }).Wait();
-            bool okResult = JsonConvert.DeserializeObject<bool>(result.Value.ToString());
+            Users okResult = JsonConvert.DeserializeObject<Users>(result.Value.ToString());
 
             // Assert test
-            Assert.AreEqual(okResult, true);
+            Assert.AreEqual(okResult.ToJson(), user.ToJson());
         }
 
         [TestMethod]
@@ -346,15 +346,15 @@ namespace IntegraPartnersContactApplicationAPI.Test
         {
             // Arrange test
             Users user = new Users() { user_id = 1, first_name = "john", last_name = "doe" };
-            var userViewModel = new UsersViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
+            var userViewModel = new UserViewModel() { UserID = 0, FirstName = "john", LastName = "doe" };
             List<Users> list = new List<Users>();
-            list.Add(user);
+            //list.Add(user);
             var query = GetQueryableMockDbSet<Users>(list);
             var iMapper = new Mock<IMapping>();
             var iMockUserRepository = new Mock<IUsersRepository>();
             iMockUserRepository.Setup(x => x.PopulateDataSet(query)).Returns(query);
             string exceptionMessage = "could not find the user to delete.";
-            iMockUserRepository.Setup(x => x.DeleteUser(user.user_id)).Returns(Task.FromResult(1));
+            iMockUserRepository.Setup(x => x.DeleteUser(user.user_id)).Returns(Task.FromResult(user));
             iMockUserRepository.Setup(x => x.UserExists(user.user_id)).Returns(true);
             iMockUserRepository.Setup(x => x.FindUser(user.user_id)).Returns(Task.FromResult(user));
             iMapper.Setup(x => x.MapViewModelToEntity(userViewModel)).Returns(user);

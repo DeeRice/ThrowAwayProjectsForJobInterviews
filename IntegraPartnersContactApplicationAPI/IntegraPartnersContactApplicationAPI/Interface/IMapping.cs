@@ -5,8 +5,8 @@ namespace IntegraPartnersContactApplicationAPI.Interface
 {
     public interface IMapping
     {
-        UsersViewModel MapEntityToViewModel(Users user);
-        Users MapViewModelToEntity(UsersViewModel userViewModel);
+        UserViewModel MapEntityToViewModel(Users user);
+        Users MapViewModelToEntity(UserViewModel userViewModel);
 
     }
 }
