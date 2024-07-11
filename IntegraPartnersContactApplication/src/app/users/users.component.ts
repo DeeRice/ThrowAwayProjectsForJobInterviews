@@ -10,6 +10,7 @@ import { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import { Change } from '../../model/change';
 import { UserExpressGridService } from './../../service/user-express-grid.service';
 import { HttpClientModule } from '@angular/common/http';
+import { EditingStartEvent, InitNewRowEvent } from 'devextreme/ui/data_grid';
 
 @Component({
   selector: 'app-users',
@@ -27,7 +28,7 @@ export class UsersComponent {
 
   changes: Change<User>[] = [];
 
-  editRowKey: number = -1;
+  editRowKey?: number | null = null;
 
   isLoading = false;
 
@@ -39,11 +40,12 @@ export class UsersComponent {
    userExpressGridService: UserExpressGridService){
     this._userService = userService;
     this._userExpressGridService = userExpressGridService;
-    this._userService.getAllUsers()?.subscribe((data) => {
+    this._userExpressGridService.getAllUsers().subscribe((data)=>{
       this.users = data;
-  });
+   });
 }
       ngOnInit() {
+        
         this.users$ = this._userExpressGridService.getAllUsers();
       
         this.isLoading = true;
@@ -61,6 +63,7 @@ export class UsersComponent {
     }
   
     onSaving(e: DxDataGridTypes.SavingEvent) {
+      
       const change = e.changes[0];
   
       if (change) {
@@ -74,16 +77,36 @@ export class UsersComponent {
   
       try {
         await this._userExpressGridService.saveChange(change);
-        this.editRowKey = -1;
+        this.editRowKey = null;
         this.changes = [];
       } finally {
         this.isLoading = false;
       }
+        this.isLoading = true;
+        this._userExpressGridService.getAllUsers().subscribe((data)=>{
+          this.users = data;
+          this.isLoading = false;
+       });
     }
   
     ngOnDestroy() {
       this.usersSubscription.unsubscribe();
   }
+  returnRowKeyString(rowKey?: number | null | undefined): string {
+     switch(rowKey){
+      case null: return "null";
+      case undefined: return "null";
+      default: return rowKey.toString();
+     }
+  }
+
+  onInitNewRow(event: InitNewRowEvent) {
+    event.data.userID = 0;
+}
+onEditingStart(event: EditingStartEvent) { 
+  this._userExpressGridService.setViewModel(event.data);  
+  
+} 
 }
 
 

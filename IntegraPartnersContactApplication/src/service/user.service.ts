@@ -9,11 +9,11 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class UserService {
   public baseUrl ="https://localhost:44335"
-  public getUserByIDUrl: string = this.baseUrl + "/GetUser";
-  public getAllUsersUrl: string = this.baseUrl + "/GetAllUsers";
-  public addUserUrl: string = this.baseUrl + "/CreateUser";
-  public updateUserUrl: string = this.baseUrl + "/EditUser";
-  public deleteUserUrl: string = this.baseUrl + "/DeleteUser";
+  public getUserByIDUrl: string = this.baseUrl + "/Users/GetUser";
+  public getAllUsersUrl: string = this.baseUrl + "/Users/GetAllUsers";
+  public addUserUrl: string = this.baseUrl + "/Users/CreateUser";
+  public updateUserUrl: string = this.baseUrl + "/Users/EditUser";
+  public deleteUserUrl: string = this.baseUrl + "/Users/DeleteUser";
   public _httpClient?: HttpClient;
   public _currentUserID: number = -1;
     constructor(private httpClient: HttpClient) { 
@@ -35,7 +35,7 @@ export class UserService {
     }
   
     editUser(user: User) : Observable<any> | undefined {
-      let params = new HttpParams().set("UserID", user.user_id.toString())
+      let params = new HttpParams().set("UserID", user!.userID!.toString())
       .set('User', JSON.stringify(user));
       return this._httpClient?.put(this.updateUserUrl, { params: params });
     }
